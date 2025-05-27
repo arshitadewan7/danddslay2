@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Jimli's Diary</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Add Supabase JS library -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <!-- Add our Supabase config -->
+  <script src="supabase-config.js"></script>
+</head>
+<body>
+  <h1>📚 Jimli's Diary</h1>
+  <a href="jimli-write.html" class="write-link">✍️ Write new entry</a>
+
+  <div id="entries"></div>
+
+  <a href="index.html" class="home-button">🏠 Go Back to Home</a>
+
+  <script>
+    const entriesDiv = document.getElementById("entries");
+    const userId = "jimli";
+
+    async function loadEntries() {
+      try {
+        const result = await getDiaryEntries(userId);
+        
+        if (result.success) {
+          const entries = result.data;
+          if (entries && entries.length > 0) {
+            entriesDiv.innerHTML = entries.map(entry => `
+              <div class="entry">
+                <div class="entry-header">
+                  <span class="date">${entry.date}</span>
+                  <span class="day">${entry.day}</span>
+                </div>
+                <div class="entry-content">${entry.content}</div>
+              </div>
+            `).join('');
+          } else {
+            entriesDiv.innerHTML = '<p class="no-entries">No entries yet. Start writing your first entry!</p>';
+          }
+        } else {
+          console.error('Error loading entries:', result.error);
+          entriesDiv.innerHTML = '<p class="error">Error loading entries. Please try again later.</p>';
+        }
+      } catch (error) {
+        console.error('Unexpected error:', error);
+        entriesDiv.innerHTML = '<p class="error">An unexpected error occurred. Please try again later.</p>';
+      }
+    }
+
+    // Load entries when page loads
+    loadEntries();
+  </script>
+</body>
+</html>
