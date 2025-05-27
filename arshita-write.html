@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Write for Arshita</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Add Supabase JS library -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <!-- Add our Supabase config -->
+  <script src="supabase-config.js"></script>
+</head>
+<body>
+  <h1>📝 Write in Arshita's Diary</h1>
+  <a href="arshita.html" class="write-link">📚 See past entries</a>
+
+  <form id="entryForm">
+    <textarea id="entryText" placeholder="Write your thoughts here..." required></textarea>
+    <br>
+    <button type="submit">Add Entry</button>
+  </form>
+
+  <a href="index.html" class="home-button">🏠 Go Back to Home</a>
+
+  <script>
+    const form = document.getElementById("entryForm");
+    const entryText = document.getElementById("entryText");
+    const userId = "arshita"; // Unique identifier for Arshita's entries
+
+    function getFormattedDate() {
+      const now = new Date();
+      const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+      const day = days[now.getDay()];
+      const date = now.toISOString().split("T")[0];
+      return { date, day };
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const { date, day } = getFormattedDate();
+      const newEntry = {
+        date,
+        day,
+        text: entryText.value
+      };
+
+      const result = await saveDiaryEntry(userId, newEntry);
+      
+      if (result.success) {
+        entryText.value = "";
+        alert("✨ Entry added! Go back to read it.");
+      } else {
+        alert("❌ Error saving entry. Please try again.");
+      }
+    });
+  </script>
+</body>
+</html>
